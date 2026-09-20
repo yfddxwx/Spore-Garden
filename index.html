@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>孢子花园</title>
+<style>
+*{box-sizing:border-box}body{margin:0;overflow:hidden;background:#07120f;color:#d9ffe9;font:14px system-ui}canvas{display:block}p{position:fixed;top:12px;left:16px;margin:0;opacity:.6;pointer-events:none}b{color:#8fffc0}
+</style>
+<p><b>孢子花园</b>　移动或点击，种下一点会呼吸的光</p>
+<canvas></canvas>
+<script>
+const c=document.querySelector('canvas'),x=c.getContext('2d'),S=[];let W,H;
+function fit(){W=c.width=innerWidth;H=c.height=innerHeight}fit();onresize=fit;
+function seed(X,Y,n=1){while(n--)S.push({x:X+(Math.random()-.5)*18,y:Y+(Math.random()-.5)*18,vx:(Math.random()-.5)*.7,vy:(Math.random()-.5)*.7,r:2+Math.random()*3,h:130+Math.random()*90,a:1})}
+onpointermove=e=>seed(e.clientX,e.clientY);onpointerdown=e=>seed(e.clientX,e.clientY,18);
+seed(innerWidth/2,innerHeight/2,24);
+function draw(){x.fillStyle='rgba(7,18,15,.12)';x.fillRect(0,0,W,H);for(let i=S.length-1;i>=0;i--){let p=S[i];p.x+=p.vx;p.y+=p.vy;p.vx+=(Math.random()-.5)*.05;p.vy+=(Math.random()-.5)*.05;p.a-=.0012;if(p.a<0){S.splice(i,1);continue}for(let q of S){let d=Math.hypot(p.x-q.x,p.y-q.y);if(d<90){x.strokeStyle=`hsla(${p.h},90%,70%,${(1-d/90)*p.a*.18})`;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(q.x,q.y);x.stroke()}}x.fillStyle=`hsla(${p.h},100%,70%,${p.a})`;x.beginPath();x.arc(p.x,p.y,p.r+Math.sin(Date.now()/300+p.x)*1.2,0,7);x.fill()}if(S.length<20)seed(Math.random()*W,Math.random()*H);requestAnimationFrame(draw)}draw();
+</script>
